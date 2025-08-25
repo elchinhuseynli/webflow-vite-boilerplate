@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "projectConfig": {
-    "name": "test-codw",
+    "name": "Test Codw",
     "prodUrl": "https://test-codw.codes.flexagency.cz"
   },
   "scripts": {
