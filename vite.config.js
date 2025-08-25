@@ -1,25 +1,28 @@
 import { defineConfig } from 'vite';
+import fs from 'fs';
+import path from 'path';
+
+// Читаем package.json, чтобы получить production URL
+const packageJson = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8'));
+const prodUrl = packageJson.projectConfig.prodUrl;
 
 export default defineConfig({
+  // Устанавливаем абсолютный URL как базовый путь для production сборки
+  base: process.env.NODE_ENV === 'production' ? `${prodUrl}/` : '/',
+
   server: {
-    // Разрешаем CORS для локальной разработки
     cors: true,
-    // Используем стандартный порт для Vite
     port: 5174,
-    // Завершать процесс, если порт уже занят
     strictPort: true,
     hmr: {
       host: 'localhost',
     },
   },
   build: {
-    // Создаем манифест для возможного серверного рендеринга (не обязательно, но полезно)
     manifest: true,
     rollupOptions: {
-      // Указываем точку входа
       input: 'src/loader.js',
       output: {
-        // Убираем хэши из названий файлов для статичных ссылок
         entryFileNames: 'assets/[name].js',
         chunkFileNames: 'assets/[name].js',
         assetFileNames: 'assets/[name].[ext]',
