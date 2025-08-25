@@ -1,59 +1,74 @@
-import readline from 'readline';
 import fs from 'fs';
 import path from 'path';
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+const args = process.argv.slice(2);
 
-const packageJsonPath = path.resolve('package.json');
-
-const askQuestion = (query) => {
-  return new Promise((resolve) => rl.question(query, resolve));
-};
-
-async function setup() {
-  console.log('--- Webflow Vite Boilerplate Setup ---');
-
-  const projectName = await askQuestion('Enter your project name (e.g., My Awesome Site): ');
-  const projectSlug = await askQuestion('Enter your project slug (e.g., my-awesome-site): ');
-
-  rl.close();
-
-  const prodUrl = `https://${projectSlug}.codes.flexagency.cz`;
-
-  try {
-    const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf-8');
-    const packageJson = JSON.parse(packageJsonContent);
-
-    packageJson.name = projectSlug;
-    packageJson.projectConfig = {
-      name: projectName,
-      prodUrl: prodUrl,
-    };
-
-    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-    console.log('\n✅ Setup complete! Your project is configured.');
-    console.log(`\nYour project name: ${projectName}`);
-    console.log(`Your production URL: ${prodUrl}`);
-
-    console.log('\n--- How to connect to Webflow ---');
-    console.log('\n➡️  For Development (run "npm run dev"):');
-    console.log('Add this to your site\'s Custom Code (before <\/body>):');
-    console.log('\x1b[32m%s\x1b[0m', '<script type="module" src="http://localhost:5174/src/loader.js" defer></script>');
-
-
-    console.log('\n➡️  For Production (after "npm run build" and deploy):');
-    console.log('Add this to your site\'s Custom Code (before <\/body>):');
-    console.log('\x1b[32m%s\x1b[0m', `<script type="module" src="${prodUrl}/assets/loader.js" defer></script>`);
-    console.log('\x1b[32m%s\x1b[0m', `<link rel="stylesheet" href="${prodUrl}/assets/loader.css" type="text/css">`);
-
-
-  } catch (error) {
-    console.error('\n❌ Error during setup:', error);
-  }
+if (args.length < 2) {
+  console.error('\n❌ Error: Missing arguments.');
+  console.error('Usage: npm run setup -- "Your Project Name" "your-project-slug"');
+  console.error('Example: npm run setup -- "My Awesome Site" "my-awesome-site"');
+  process.exit(1);
 }
 
-setup();
+const [projectName, projectSlug] = args;
+const packageJsonPath = path.resolve('package.json');
+
+console.log(`--- Setting up project: ${projectName} ---`);
+
+const prodUrl = `https://${projectSlug}.codes.flexagency.cz`;
+
+try {
+  const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf-8');
+  const packageJson = JSON.parse(packageJsonContent);
+
+  packageJson.name = projectSlug;
+  packageJson.projectConfig = {
+    name: projectName,
+    prodUrl: prodUrl,
+  };
+
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+  const devScript = '<script type="module" src="http://localhost:5174/src/loader.js" defer></script>';
+  const prodScript = `<script type="module" src="${prodUrl}/assets/loader.js" defer></script>`;
+  const prodLink = `<link rel="stylesheet" href="${prodUrl}/assets/loader.css" type="text/css">`;
+
+  const fileContent = `
+# Webflow Embed Codes for: ${projectName}
+
+## 🟢 Development Mode
+
+Use these codes when running 
+npm run dev
+.
+
+### Footer Code (before </body>)
+
+${devScript}
+
+---
+
+## 🚀 Production Mode
+
+Use these codes after deploying the 
+dist
+ folder.
+
+### Head Code
+
+${prodLink}
+
+### Footer Code (before </body>)
+
+${prodScript}
+
+`;
+
+  fs.writeFileSync('webflow_embed_codes.md', fileContent.trim());
+
+  console.log('\n✅ Setup complete! Your project is configured.');
+  console.log('✅ Embed codes have been saved to \x1b[36mwebflow_embed_codes.md\x1b[0m');
+
+} catch (error) {
+  console.error('\n❌ Error during setup:', error);
+}
