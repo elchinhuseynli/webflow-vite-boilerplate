@@ -1,0 +1,19 @@
+{
+  "name": "test-codw",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "projectConfig": {
+    "name": "test-codw",
+    "prodUrl": "https://test-codw.codes.flexagency.cz"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "setup": "node setup.js"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}

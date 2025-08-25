@@ -1,0 +1,16 @@
+:root {
+  --brand-color: #1a73e8;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: var(--brand-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
