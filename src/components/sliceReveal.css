@@ -1,0 +1,77 @@
+/* Required styles for wrapper */
+[data-slice-wrapper] {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Required styles for any revealed element */
+[data-slice-target] {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* Generated overlay for slices */
+.slice-reveal_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.slice-reveal_slice {
+  flex: 1;
+  height: 100%;
+  background-color: #ffffff;
+}
+
+.slice-theme_gold .slice-reveal_slice {
+  background: var(--_primitives---colors--gold);
+}
+
+/* Horizontal direction (default) */
+.slice-reveal_overlay[data-direction="horizontal"],
+.slice-reveal_overlay[data-direction="left-to-right"],
+.slice-reveal_overlay[data-direction="right-to-left"] {
+  flex-direction: row;
+}
+
+.slice-reveal_overlay[data-direction="horizontal"] .slice-reveal_slice,
+.slice-reveal_overlay[data-direction="left-to-right"] .slice-reveal_slice,
+.slice-reveal_overlay[data-direction="right-to-left"] .slice-reveal_slice {
+  flex: 1;
+  height: 100%;
+  width: auto;
+}
+
+/* Vertical direction */
+.slice-reveal_overlay[data-direction="vertical"],
+.slice-reveal_overlay[data-direction="top-to-bottom"],
+.slice-reveal_overlay[data-direction="bottom-to-top"] {
+  flex-direction: column;
+}
+
+.slice-reveal_overlay[data-direction="vertical"] .slice-reveal_slice,
+.slice-reveal_overlay[data-direction="top-to-bottom"] .slice-reveal_slice,
+.slice-reveal_overlay[data-direction="bottom-to-top"] .slice-reveal_slice {
+  flex: 1;
+  width: 100%;
+  height: auto;
+}
+
+/* Base slice styling */
+.slice-reveal_slice {
+  background-color: #ffffff;
+}
+
+.cta_background-video-wrapper [data-slice-wrapper] {
+  position: absolute;
+}

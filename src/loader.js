@@ -1,8 +1,6 @@
 // Глобальные стили
 import "./main.css";
-
-// Импортируем общие компоненты, которые должны работать на всех страницах
-import { initSlider } from "./components/slider";
+import "./main.js";
 
 /**
  * Динамически загружает JS и CSS модуль для текущей страницы.
@@ -39,14 +37,7 @@ const loadPageScript = async () => {
   }
 };
 
-// Инициализация общих для всех страниц скриптов
-const initCommonScripts = () => {
-  console.log("[Loader] Initializing common scripts...");
-  initSlider();
-};
-
 // Запускаем все
 document.addEventListener("DOMContentLoaded", () => {
-  initCommonScripts();
   loadPageScript();
 });

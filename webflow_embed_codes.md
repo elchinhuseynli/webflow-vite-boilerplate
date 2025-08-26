@@ -1,4 +1,4 @@
-# Webflow Embed Codes for: Test Codw
+# Webflow Embed Codes for: Villa Patriot
 
 ## 🟢 Development Mode
 
@@ -20,8 +20,8 @@ dist
 
 ### Head Code
 
-<link rel="stylesheet" href="https://test-codw.codes.flexagency.cz/assets/loader.css" type="text/css">
+<link rel="stylesheet" href="https://villa-patriot.codes.flexagency.cz/assets/loader.css" type="text/css">
 
 ### Footer Code (before </body>)
 
-<script type="module" src="https://test-codw.codes.flexagency.cz/assets/loader.js" defer></script>
+<script type="module" src="https://villa-patriot.codes.flexagency.cz/assets/loader.js" defer></script>

@@ -1,0 +1,224 @@
+/* =========================================
+   Minimal, variable-driven custom cursor
+   ========================================= */
+
+/* Base: tweak only these defaults for global behavior */
+.mf-cursor {
+  /* Geometry & visuals */
+  --cursor-diam: 7rem; /* Base circle diameter */
+  --cursor-color: currentColor; /* Fill color */
+  --blend: normal; /* Mix-blend mode */
+  --z: 99999; /* Layer */
+
+  /* Default scales */
+  --scale: 0.1; /* Idle scale (default mode) */
+  --scale-active: 0.2; /* Active scale (default mode) */
+
+  /* Inner content (text/icon) scale */
+  --inner-scale: 1;
+
+  /* Derived: what actually gets applied to :before */
+  --transform: scale(var(--scale)); /* Idle transform */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z);
+  contain: layout style size;
+  pointer-events: none;
+  color: inherit;
+  mix-blend-mode: var(--blend);
+  transition: color 0.3s;
+}
+
+/* The circular shape (single definition) */
+.mf-cursor:before {
+  content: "";
+  position: absolute;
+  /* center the circle by half its diameter */
+  top: calc(-0.5 * var(--cursor-diam));
+  left: calc(-0.5 * var(--cursor-diam));
+  width: var(--cursor-diam);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--cursor-color);
+  transform: var(--transform);
+  transition: transform 0.3s, opacity 0.1s;
+}
+
+/* Active state switches only the variable (prevents bounce) */
+.mf-cursor.-active {
+  --transform: scale(var(--scale-active));
+}
+
+/* Quick variants */
+.mf-cursor.-inverse {
+  --cursor-color: #fff;
+}
+.mf-cursor.-hidden:before {
+  transform: scale(0);
+}
+.mf-cursor.-under {
+  z-index: 0;
+}
+
+/* =========================================
+     Mode presets — override variables only
+     (No duplicate :before transform rules)
+     ========================================= */
+
+/* Shared white fill + exclusion blend */
+.mf-cursor.-exclusion,
+.mf-cursor.-menu,
+.mf-cursor.-opaque,
+.mf-cursor.-pointer {
+  --cursor-color: #fff;
+  --blend: exclusion;
+  transition-duration: 0s;
+}
+
+/* Pointer */
+.mf-cursor.-pointer {
+  --scale: 0.25;
+  --scale-active: 0.3;
+  --transform: scale(var(--scale));
+}
+
+/* Opaque */
+.mf-cursor.-opaque {
+  --scale: 0.6;
+  --scale-active: 0.5;
+  --transform: scale(var(--scale));
+}
+
+/* Large */
+.mf-cursor.-lg {
+  --scale: 1.05;
+  --scale-active: 1.15;
+  --transform: scale(var(--scale));
+}
+
+/* Text mode (solid fill, normal blend) */
+.mf-cursor.-text {
+  --blend: normal;
+  --cursor-color: currentColor;
+  --scale: 1;
+  --scale-active: 0.8;
+  --inner-scale: 1;
+  --transform: scale(var(--scale));
+}
+
+/* ICON MODE — control size & feel here */
+.mf-cursor.-icon {
+  --blend: multiply;
+  --cursor-color: var(--_primitives---colors--black);
+  --cursor-diam: 7rem; /* <— change to make the icon circle smaller/larger */
+  --idle-icon: 0.75; /* idle scale inside icon mode */
+  --active-icon: 0.75; /* active scale inside icon mode */
+  --inner-scale: 1;
+  --transform: scale(var(--idle-icon));
+}
+.mf-cursor.-icon.-active {
+  --transform: scale(var(--active-icon));
+}
+
+/* Menu mode */
+.mf-cursor.-menu {
+  --z: 250;
+  --scale: 0.6;
+  --scale-active: 0.55;
+  --transform: scale(var(--scale));
+}
+
+/* =========================================
+     Media preview (unchanged behavior)
+     ========================================= */
+.mf-cursor-media {
+  position: absolute;
+  width: 36rem;
+  height: 36rem;
+  margin: -18rem 0 0 -18rem;
+}
+.mf-cursor-media img,
+.mf-cursor-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateZ(0);
+}
+
+/* Media mask (circle) */
+.mf-cursor-media-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transform: scale(0) translateZ(0);
+  opacity: 0;
+  border-radius: 50%;
+  transition: transform 0.35s, opacity 0.2s 0.2s;
+}
+
+/* Media state */
+.mf-cursor.-media {
+  --blend: normal;
+  z-index: 0;
+  transition-delay: 0s;
+}
+.mf-cursor.-media .mf-cursor-media-box {
+  opacity: 1;
+  transform: scale(0.696);
+  transition-duration: 0.4s, 0.4s;
+  transition-delay: 0s, 0s;
+}
+
+/* Media size variant */
+.mf-cursor.-media.-media-lg .mf-cursor-media-box {
+  transform: scale(1) !important;
+}
+
+/* Media blend variant */
+.mf-cursor.-media.-media-blend {
+  z-index: 150;
+  --blend: exclusion;
+}
+@supports (mix-blend-mode: exclusion) {
+  .mf-cursor.-media.-media-blend .mf-cursor-media-box {
+    filter: invert(1);
+  }
+}
+
+/* =========================================
+     Cursor text/icon content (centered)
+     ========================================= */
+.mf-cursor-text {
+  position: absolute;
+  /* Scales with diameter */
+  --inner-side: calc(0.36 * var(--cursor-diam));
+  top: calc(-0.5 * var(--inner-side));
+  left: calc(-0.5 * var(--inner-side));
+  width: var(--inner-side);
+  height: var(--inner-side);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0) rotate(10deg);
+  opacity: 0;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 120%;
+  text-align: center;
+  transition: opacity 0.4s, transform 0.3s;
+}
+
+/* Reveal inner content for icon/text modes */
+.mf-cursor.-icon .mf-cursor-text,
+.mf-cursor.-text .mf-cursor-text {
+  opacity: 1;
+  transform: scale(var(--inner-scale));
+}
+
+/* Inverse inner text color */
+.mf-cursor.-inverse .mf-cursor-text {
+  color: #000;
+}
